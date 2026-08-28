@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           # Point strictly to the production output path
-          path: composeApp/build/dist/wasmJs/productionExecutable
+          path: webApp/build/dist/wasmJs/productionExecutable
 
       - name: Deploy to GitHub Pages
         id: deployment
