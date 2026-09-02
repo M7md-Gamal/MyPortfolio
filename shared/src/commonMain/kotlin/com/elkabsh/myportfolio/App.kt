@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import com.elkabsh.myportfolio.model.getPortfolioData
@@ -29,7 +28,6 @@ fun App() {
 
         // Track section offsets for smooth scroll navigation
         val sectionOffsets = remember { mutableStateMapOf<Int, Float>() }
-        val sectionSizes = remember { mutableStateMapOf<Int, IntSize>() }
 
         // Viewport height for fade-in calculations
         var viewportHeight by remember { mutableIntStateOf(0) }
@@ -101,10 +99,9 @@ fun App() {
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 onNavigateTo = { index -> navigateToSection(index) },
-                                modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[0] = coords.positionInRoot().y
-                                    sectionSizes[0] = coords.size
-                                }
+                                    modifier = Modifier.onGloballyPositioned { coords ->
+                                        sectionOffsets[0] = coords.positionInRoot().y
+                                    }
                             )
                         }
 
@@ -119,7 +116,6 @@ fun App() {
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
                                     sectionOffsets[1] = coords.positionInRoot().y
-                                    sectionSizes[1] = coords.size
                                 }
                             )
                         }
@@ -135,7 +131,6 @@ fun App() {
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
                                     sectionOffsets[2] = coords.positionInRoot().y
-                                    sectionSizes[2] = coords.size
                                 }
                             )
                         }
@@ -151,7 +146,6 @@ fun App() {
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
                                     sectionOffsets[3] = coords.positionInRoot().y
-                                    sectionSizes[3] = coords.size
                                 }
                             )
                         }
@@ -167,7 +161,6 @@ fun App() {
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
                                     sectionOffsets[4] = coords.positionInRoot().y
-                                    sectionSizes[4] = coords.size
                                 }
                             )
                         }

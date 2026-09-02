@@ -24,7 +24,9 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = TextSecondary,
     outline = BorderColor,
-    outlineVariant = BorderColor
+    outlineVariant = BorderColor,
+    error = Rose,
+    onError = TextPrimary
 )
 
 @Composable

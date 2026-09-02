@@ -15,8 +15,8 @@ fun FooterSection(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(DarkSurface)
-            .padding(vertical = 24.dp),
+            .background(DarkBackground)
+            .padding(vertical = 32.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

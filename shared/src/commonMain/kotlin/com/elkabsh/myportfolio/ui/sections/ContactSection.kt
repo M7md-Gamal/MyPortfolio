@@ -1,18 +1,37 @@
 package com.elkabsh.myportfolio.ui.sections
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
-import com.elkabsh.myportfolio.ui.theme.*
+import com.elkabsh.myportfolio.ui.theme.Blue
+import com.elkabsh.myportfolio.ui.theme.DarkSurface
+import com.elkabsh.myportfolio.ui.theme.DarkSurfaceVariant
+import com.elkabsh.myportfolio.ui.theme.TextPrimary
+import com.elkabsh.myportfolio.ui.theme.TextSecondary
+import myportfolio.shared.generated.resources.Res
+import myportfolio.shared.generated.resources.github
+import myportfolio.shared.generated.resources.linkedin
+import myportfolio.shared.generated.resources.whatsapp
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun ContactSection(
@@ -20,21 +39,22 @@ fun ContactSection(
     isMobile: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val horizontalPadding = if (isMobile) 24.dp else 64.dp
+    val horizontalPadding = if (isMobile) 24.dp else 80.dp
+    val uriHandler = LocalUriHandler.current
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(DarkSurface)
-            .padding(horizontal = horizontalPadding, vertical = 64.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+            .padding(horizontal = horizontalPadding, vertical = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {
         SectionTitle("Get In Touch")
 
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             Text(
                 text = "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.",
@@ -44,32 +64,27 @@ fun ContactSection(
                 modifier = Modifier.fillMaxWidth(if (isMobile) 1f else 0.6f)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Contact cards
             if (isMobile) {
-                // Mobile: 2x2 grid
+                // Mobile: single column with stacked cards
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        ContactCard(
-                            title = "Email",
-                            value = data.email,
-                            icon = "📧",
-                            modifier = Modifier.weight(1f)
-                        )
-                        ContactCard(
-                            title = "Phone",
-                            value = data.phone,
-                            icon = "📱",
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
+                    ContactCard(
+                        title = "Email",
+                        value = data.email,
+                        icon = Icons.Outlined.Mail,
+                        onClick = { uriHandler.openUri("mailto:${data.email}") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    ContactCard(
+                        title = "Phone",
+                        value = data.phone,
+                        icon = vectorResource(Res.drawable.whatsapp),
+                        onClick = { uriHandler.openUri("https://wa.me/${data.phone}") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -77,13 +92,15 @@ fun ContactSection(
                         ContactCard(
                             title = "LinkedIn",
                             value = "Connect",
-                            icon = "💼",
+                            onClick = { uriHandler.openUri(data.linkedInUrl) },
+                            icon = vectorResource(Res.drawable.linkedin),
                             modifier = Modifier.weight(1f)
                         )
                         ContactCard(
                             title = "GitHub",
                             value = "Profile",
-                            icon = "🐙",
+                            onClick = { uriHandler.openUri(data.githubUrl) },
+                            icon = vectorResource(Res.drawable.github),
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -97,25 +114,29 @@ fun ContactSection(
                     ContactCard(
                         title = "Email",
                         value = data.email,
-                        icon = "📧",
+                        icon = Icons.Outlined.Mail,
+                        onClick = { uriHandler.openUri("mailto:${data.email}") },
                         modifier = Modifier.weight(1f)
                     )
                     ContactCard(
                         title = "Phone",
                         value = data.phone,
-                        icon = "📱",
+                        icon = vectorResource(Res.drawable.whatsapp),
+                        onClick = { uriHandler.openUri("https://wa.me/${data.phone}") },
                         modifier = Modifier.weight(1f)
                     )
                     ContactCard(
                         title = "LinkedIn",
                         value = "Connect on LinkedIn",
-                        icon = "💼",
+                        icon = vectorResource(Res.drawable.linkedin),
+                        onClick = { uriHandler.openUri(data.linkedInUrl) },
                         modifier = Modifier.weight(1f)
                     )
                     ContactCard(
                         title = "GitHub",
                         value = "View GitHub Profile",
-                        icon = "🐙",
+                        icon = vectorResource(Res.drawable.github),
+                        onClick = { uriHandler.openUri(data.githubUrl) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -128,21 +149,23 @@ fun ContactSection(
 private fun ContactCard(
     title: String,
     value: String,
-    icon: String,
+    icon: ImageVector,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(DarkSurfaceVariant)
-            .clickable { /* Handle click based on type */ }
+            .clickable { onClick() }
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = icon,
-            style = MaterialTheme.typography.displayMedium
+        Image(
+            imageVector = icon,
+            contentDescription = "WhatsApp",
+            modifier = Modifier.size(24.dp)
         )
         Text(
             text = title,

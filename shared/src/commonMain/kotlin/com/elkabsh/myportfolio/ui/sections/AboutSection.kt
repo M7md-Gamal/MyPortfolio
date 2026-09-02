@@ -6,8 +6,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
 import com.elkabsh.myportfolio.ui.theme.*
@@ -18,71 +20,102 @@ fun AboutSection(
     isMobile: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val horizontalPadding = if (isMobile) 24.dp else 64.dp
+    val horizontalPadding = if (isMobile) 24.dp else 80.dp
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(DarkBackground)
-            .padding(horizontal = horizontalPadding, vertical = 64.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+            .padding(horizontal = horizontalPadding, vertical = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {
         SectionTitle("About Me")
 
         if (isMobile) {
-            // Mobile: stack vertically
-            ProfileCard(data)
-            EducationCard(data)
+            // Mobile: storytelling flow
+            ProfileStory(data)
+            EducationStory(data)
         } else {
-            // Desktop: side by side
+            // Desktop: split layout with visual hierarchy
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(48.dp)
+                horizontalArrangement = Arrangement.spacedBy(64.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                ProfileCard(data, Modifier.weight(1f))
-                EducationCard(data, Modifier.weight(1f))
+                // Left: Profile story
+                ProfileStory(data, Modifier.weight(1f))
+
+                // Right: Education & Languages
+                EducationStory(data, Modifier.weight(1f))
             }
         }
     }
 }
 
 @Composable
-private fun ProfileCard(data: PortfolioData, modifier: Modifier = Modifier) {
+private fun ProfileStory(data: PortfolioData, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(DarkSurface)
-            .padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Profile intro
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text(
+                text = data.bio,
+                style = MaterialTheme.typography.bodyLarge,
+                color = TextSecondary
+            )
+        }
+
+        // Key stats row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(32.dp)
+        ) {
+            StatItem("6+", "Projects")
+            StatItem("7+", "Skills")
+            StatItem("3+", "Domains")
+        }
+    }
+}
+
+@Composable
+private fun StatItem(value: String, label: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = "Profile",
-            style = MaterialTheme.typography.titleLarge,
-            color = Blue
+            text = value,
+            style = MaterialTheme.typography.displayMedium,
+            color = Blue,
+            textAlign = TextAlign.Center
         )
         Text(
-            text = data.bio,
-            style = MaterialTheme.typography.bodyLarge,
-            color = TextSecondary
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = TextMuted,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-private fun EducationCard(data: PortfolioData, modifier: Modifier = Modifier) {
+private fun EducationStory(data: PortfolioData, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(DarkSurface)
             .padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Text(
-            text = "Education",
-            style = MaterialTheme.typography.titleLarge,
-            color = Green
-        )
+        // Education header
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = "Education",
+                style = MaterialTheme.typography.titleLarge,
+                color = Green
+            )
             Text(
                 text = data.education.degree,
                 style = MaterialTheme.typography.headlineMedium,
@@ -105,27 +138,38 @@ private fun EducationCard(data: PortfolioData, modifier: Modifier = Modifier) {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Languages",
-            style = MaterialTheme.typography.titleLarge,
-            color = Purple
+        // Divider
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(BorderColor)
         )
-        data.languages.forEach { language ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = language.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = TextPrimary
-                )
-                Text(
-                    text = language.proficiency,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextMuted
-                )
+
+        // Languages
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                text = "Languages",
+                style = MaterialTheme.typography.titleLarge,
+                color = Purple
+            )
+            data.languages.forEach { language ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = language.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = TextPrimary
+                    )
+                    Text(
+                        text = language.proficiency,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextMuted
+                    )
+                }
             }
         }
     }
@@ -142,7 +186,7 @@ fun SectionTitle(
             style = MaterialTheme.typography.headlineLarge,
             color = TextPrimary
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(2.dp))

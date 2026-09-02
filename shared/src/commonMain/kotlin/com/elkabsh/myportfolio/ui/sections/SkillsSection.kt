@@ -20,63 +20,79 @@ fun SkillsSection(
     isMobile: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val horizontalPadding = if (isMobile) 24.dp else 64.dp
-    val columnsPerRow = if (isMobile) 1 else 2
+    val horizontalPadding = if (isMobile) 24.dp else 80.dp
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(DarkSurface)
-            .padding(horizontal = horizontalPadding, vertical = 64.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+            .padding(horizontal = horizontalPadding, vertical = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {
         SectionTitle("Skills")
 
-        data.skillCategories.chunked(columnsPerRow).forEach { row ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(if (isMobile) 0.dp else 32.dp)
-            ) {
-                row.forEach { category ->
-                    Column(
-                        modifier = Modifier
-                            .then(
-                                if (!isMobile) Modifier.weight(1f) else Modifier.fillMaxWidth()
-                            )
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(DarkSurfaceVariant)
-                            .padding(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Text(
-                            text = category.name,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = when (category.color) {
-                                SkillColor.BLUE -> Blue
-                                SkillColor.GREEN -> Green
-                                SkillColor.ORANGE -> Orange
-                                SkillColor.PURPLE -> Purple
-                                SkillColor.YELLOW -> Yellow
-                            }
-                        )
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            category.skills.forEach { skill ->
-                                SkillChip(
-                                    name = skill.name,
-                                    color = category.color
-                                )
-                            }
-                        }
+        if (isMobile) {
+            // Mobile: single column with all categories
+            data.skillCategories.forEach { category ->
+                SkillCategoryCard(category, isMobile)
+            }
+        } else {
+            // Desktop: two-column grid
+            data.skillCategories.chunked(2).forEach { row ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(32.dp)
+                ) {
+                    row.forEach { category ->
+                        SkillCategoryCard(category, isMobile, Modifier.weight(1f))
                     }
-                }
-                if (!isMobile && row.size < columnsPerRow) {
-                    repeat(columnsPerRow - row.size) {
+                    if (row.size < 2) {
                         Spacer(modifier = Modifier.weight(1f))
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SkillCategoryCard(
+    category: com.elkabsh.myportfolio.model.SkillCategory,
+    isMobile: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val accentColor = when (category.color) {
+        SkillColor.BLUE -> Blue
+        SkillColor.GREEN -> Green
+        SkillColor.ORANGE -> Orange
+        SkillColor.PURPLE -> Purple
+        SkillColor.YELLOW -> Yellow
+    }
+
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(DarkSurfaceVariant)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Category header
+        Text(
+            text = category.name,
+            style = MaterialTheme.typography.titleLarge,
+            color = accentColor
+        )
+
+        // Skills grid
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            category.skills.forEach { skill ->
+                SkillChip(
+                    name = skill.name,
+                    color = category.color
+                )
             }
         }
     }

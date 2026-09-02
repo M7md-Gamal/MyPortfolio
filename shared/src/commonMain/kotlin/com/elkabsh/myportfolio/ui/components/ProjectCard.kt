@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.Project
@@ -20,6 +21,7 @@ fun ProjectCard(
     project: Project,
     modifier: Modifier = Modifier
 ) {
+    val uriHandler = LocalUriHandler.current
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -27,7 +29,7 @@ fun ProjectCard(
             .padding(24.dp)
             .then(
                 if (project.githubUrl != null) Modifier.clickable {
-                    // Open link in browser - handled via JS interop or window.open
+                    uriHandler.openUri(project.githubUrl)
                 } else Modifier
             ),
         verticalArrangement = Arrangement.spacedBy(12.dp)

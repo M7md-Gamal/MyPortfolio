@@ -41,7 +41,7 @@ data class Project(
     val name: String,
     val description: String,
     val techStack: List<String>,
-    val githubUrl: String?,
+    val githubUrl: String?=null,
     val isFreelance: Boolean = false,
     val isGraduation: Boolean = false
 )
@@ -52,14 +52,14 @@ data class Language(
 )
 
 fun getPortfolioData() = PortfolioData(
-    name = "Mohamed Gamal Abdelwahab",
-    title = "Android Developer | KMP",
+    name = "Mohamed Gamal AbdelWahab",
+    title = "Android | KMP Developer",
     tagline = "Building scalable, high-performance mobile applications with modern Android technologies",
     location = "Cairo, Egypt",
     email = "mohamedgamal20k@gmail.com",
     phone = "01019292126",
-    linkedInUrl = "https://linkedin.com/in/mohamedgamal20k",
-    githubUrl = "https://github.com/mohamedgamal20k",
+    linkedInUrl = "https://www.linkedin.com/in/m7md-gamal/",
+    githubUrl = "https://github.com/M7md-Gamal",
     bio = "Mobile Developer specializing in building scalable, high-performance mobile applications using modern Android technologies. Proficient in Kotlin, Jetpack Compose, and XML-based UI development with a strong foundation in clean architecture principles. Experienced in Kotlin Multiplatform for cross-platform development. Proven track record of delivering robust applications with seamless user experiences, offline capabilities, and real-time data synchronization.",
     education = Education(
         degree = "Bachelor of Computer Science",
@@ -145,39 +145,38 @@ fun getPortfolioData() = PortfolioData(
             name = "CarePulse",
             description = "Cross-platform (Android & iOS) patient monitoring application used in hospitals to track real-time patient stats, vital signs, and clinical indicators. Integrated an automated MEWS/NEWS early warning scoring engine that instantly alerts medical staff upon detecting signs of clinical deterioration.",
             techStack = listOf("KMP", "Compose MP", "Ktor", "Koin", "Vico Charts", "Lottie"),
-            githubUrl = "https://github.com/mohamedgamal20k",
             isFreelance = true
         ),
         Project(
             name = "News App",
             description = "Comprehensive news app with real-time updates, offline reading, and smooth pagination. Architected using Jetpack Compose with MVI and Clean Architecture.",
             techStack = listOf("Jetpack Compose", "MVI", "Room", "Retrofit", "Hilt", "Material Design 3"),
-            githubUrl = "https://github.com/mohamedgamal20k"
+            githubUrl = "https://github.com/M7md-Gamal/News-App"
         ),
         Project(
             name = "Bookpedia",
             description = "Cross-platform book discovery application targeting Android and iOS. Features book search, detailed information, and favorites with a unified codebase while maintaining platform-specific UI optimizations.",
             techStack = listOf("KMP", "Compose MP", "Ktor Client", "Koin"),
-            githubUrl = "https://github.com/mohamedgamal20k"
+            githubUrl = "https://github.com/M7md-Gamal/Bookpedia"
         ),
         Project(
             name = "Diabetes Diagnoses",
             description = "Healthcare app using ML to predict diabetes risk, assisting doctors with quick and easy diagnosis. Features offline ML inference, secure user management, and modular architecture.",
             techStack = listOf("Jetpack Compose", "TensorFlow Lite", "Room", "Firebase", "Hilt"),
-            githubUrl = "https://github.com/mohamedgamal20k",
+            githubUrl = "https://github.com/M7md-Gamal/Diabetes",
             isGraduation = true
         ),
         Project(
             name = "Chatter",
             description = "Feature-rich messaging app with enterprise-level architecture. Real-time messaging, secure user authentication, and scalable data management.",
             techStack = listOf("Jetpack Compose", "Firebase", "MVVM", "Realtime Database"),
-            githubUrl = "https://github.com/mohamedgamal20k"
+            githubUrl = "https://github.com/M7md-Gamal/Chatter"
         ),
         Project(
             name = "Memory Game & GameMeter",
             description = "Interactive games built with modern Android technologies.",
             techStack = listOf("Android SDK", "Kotlin", "Jetpack Compose"),
-            githubUrl = "https://github.com/mohamedgamal20k"
+            githubUrl = "https://github.com/M7md-Gamal"
         )
     ),
     languages = listOf(
