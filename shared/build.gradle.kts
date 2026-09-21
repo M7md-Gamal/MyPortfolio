@@ -5,27 +5,17 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKmpLibrary)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-
     android {
         namespace = "com.elkabsh.myportfolio.shared"
         compileSdk = 37
-
-        defaultConfig {
-            minSdk = 24
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
         }
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
-        }
+        androidResources { enable = true }
     }
     js {
         browser()
