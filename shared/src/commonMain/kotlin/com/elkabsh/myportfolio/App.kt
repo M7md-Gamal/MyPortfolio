@@ -1,12 +1,24 @@
 package com.elkabsh.myportfolio
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -16,9 +28,15 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.ui.PortfolioViewModel
 import com.elkabsh.myportfolio.ui.components.FadeInOnScrollSection
@@ -30,6 +48,7 @@ import com.elkabsh.myportfolio.ui.sections.HeroSection
 import com.elkabsh.myportfolio.ui.sections.ProjectsSection
 import com.elkabsh.myportfolio.ui.sections.SkillsSection
 import com.elkabsh.myportfolio.ui.theme.DarkBackground
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
 import com.elkabsh.myportfolio.ui.theme.PortfolioTheme
 import kotlinx.coroutines.launch
 
@@ -66,6 +85,11 @@ fun App(
                 }
                 closest
             }
+        }
+
+        // Show back to top button when scrolled down
+        val showBackToTop by remember {
+            derivedStateOf { scrollState.value > 500 }
         }
 
         // Navigation helper: smoothly scrolls to the target section's absolute offset
@@ -119,7 +143,8 @@ fun App(
                                 isMobile = isMobile,
                                 onNavigateTo = { index -> navigateToSection(index) },
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[0] = coords.positionInRoot().y + scrollState.value
+                                    sectionOffsets[0] =
+                                        coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
@@ -134,7 +159,8 @@ fun App(
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[1] = coords.positionInRoot().y + scrollState.value
+                                    sectionOffsets[1] =
+                                        coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
@@ -149,7 +175,8 @@ fun App(
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[2] = coords.positionInRoot().y + scrollState.value
+                                    sectionOffsets[2] =
+                                        coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
@@ -164,7 +191,8 @@ fun App(
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[3] = coords.positionInRoot().y + scrollState.value
+                                    sectionOffsets[3] =
+                                        coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
@@ -179,13 +207,50 @@ fun App(
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[4] = coords.positionInRoot().y + scrollState.value
+                                    sectionOffsets[4] =
+                                        coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
 
                         // Footer
                         FooterSection()
+                    }
+                }
+
+                // Floating "Back to Top" Action Button (FAB)
+                AnimatedVisibility(
+                    visible = showBackToTop,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 }),
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(if (isMobile) 20.dp else 36.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(GoldPrimary)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Scroll to top"
+                            ) {
+                                coroutineScope.launch {
+                                    scrollState.animateScrollTo(0)
+                                }
+                            }
+                            .semantics {
+                                role = Role.Button
+                                contentDescription = "Scroll to top"
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowUpward,
+                            contentDescription = "Scroll to top",
+                            tint = DarkBackground
+                        )
                     }
                 }
             }

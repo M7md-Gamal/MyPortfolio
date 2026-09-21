@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,26 +16,37 @@ import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
 import com.elkabsh.myportfolio.ui.PortfolioViewModel
+import com.elkabsh.myportfolio.ui.theme.AccentEmerald
 import com.elkabsh.myportfolio.ui.theme.DarkSurface
 import com.elkabsh.myportfolio.ui.theme.DarkSurfaceVariant
 import com.elkabsh.myportfolio.ui.theme.GoldPrimary
 import com.elkabsh.myportfolio.ui.theme.TextPrimary
 import com.elkabsh.myportfolio.ui.theme.TextSecondary
+import kotlinx.coroutines.delay
 import myportfolio.shared.generated.resources.Res
 import myportfolio.shared.generated.resources.github
 import myportfolio.shared.generated.resources.linkedin
 import myportfolio.shared.generated.resources.whatsapp
 import org.jetbrains.compose.resources.vectorResource
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun ContactSection(
@@ -44,7 +56,17 @@ fun ContactSection(
 ) {
     val horizontalPadding = if (isMobile) 24.dp else 80.dp
     val uriHandler = LocalUriHandler.current
+    val clipboardManager = LocalClipboardManager.current
     val whatsAppUrl = PortfolioViewModel.formatWhatsAppUrl(data.phone)
+
+    var emailCopied by remember { mutableStateOf(false) }
+
+    if (emailCopied) {
+        LaunchedEffect(emailCopied) {
+            delay(2500.milliseconds)
+            emailCopied = false
+        }
+    }
 
     Column(
         modifier = modifier
@@ -79,13 +101,19 @@ fun ContactSection(
                         title = "Email",
                         value = data.email,
                         icon = Icons.Outlined.Mail,
-                        onClick = { uriHandler.openUri("mailto:${data.email}") },
+                        badge = if (emailCopied) "✓ Copied to clipboard!" else "Tap to copy / email",
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(data.email))
+                            emailCopied = true
+                            uriHandler.openUri("mailto:${data.email}")
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                     ContactCard(
                         title = "WhatsApp",
                         value = data.phone,
                         icon = vectorResource(Res.drawable.whatsapp),
+                        badge = "Chat directly on WhatsApp",
                         onClick = { uriHandler.openUri(whatsAppUrl) },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -119,13 +147,19 @@ fun ContactSection(
                         title = "Email",
                         value = data.email,
                         icon = Icons.Outlined.Mail,
-                        onClick = { uriHandler.openUri("mailto:${data.email}") },
+                        badge = if (emailCopied) "✓ Copied to clipboard!" else "Click to copy & mail",
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(data.email))
+                            emailCopied = true
+                            uriHandler.openUri("mailto:${data.email}")
+                        },
                         modifier = Modifier.weight(1f)
                     )
                     ContactCard(
                         title = "WhatsApp",
                         value = data.phone,
                         icon = vectorResource(Res.drawable.whatsapp),
+                        badge = "Chat directly on WhatsApp",
                         onClick = { uriHandler.openUri(whatsAppUrl) },
                         modifier = Modifier.weight(1f)
                     )
@@ -154,6 +188,7 @@ private fun ContactCard(
     title: String,
     value: String,
     icon: ImageVector,
+    badge: String? = null,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -167,22 +202,41 @@ private fun ContactCard(
             ) { onClick() }
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Image(
             imageVector = icon,
             contentDescription = title,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(26.dp)
         )
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            color = TextPrimary
+            color = TextPrimary,
+            fontWeight = FontWeight.Bold
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             color = GoldPrimary
         )
+
+        if (badge != null) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(
+                        if (badge.startsWith("✓")) AccentEmerald.copy(alpha = 0.2f)
+                        else DarkSurface.copy(alpha = 0.6f)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = badge,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (badge.startsWith("✓")) AccentEmerald else TextSecondary
+                )
+            }
+        }
     }
 }

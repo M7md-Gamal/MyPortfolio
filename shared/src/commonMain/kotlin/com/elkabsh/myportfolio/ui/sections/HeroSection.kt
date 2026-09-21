@@ -5,10 +5,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
@@ -51,6 +55,7 @@ fun HeroSection(
     onNavigateTo: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val uriHandler = LocalUriHandler.current
     val horizontalPadding = if (isMobile) 24.dp else 80.dp
     val verticalPadding = if (isMobile) 64.dp else 120.dp
 
@@ -200,10 +205,12 @@ fun HeroSection(
             Spacer(modifier = Modifier.height(40.dp))
 
             // CTA Buttons with animation
-            Row(
+            FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.alpha(buttonsAlpha)
             ) {
+                // View Projects
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
@@ -212,15 +219,37 @@ fun HeroSection(
                             role = Role.Button,
                             onClickLabel = "View Projects"
                         ) { onNavigateTo(3) }
-                        .padding(horizontal = 32.dp, vertical = 16.dp)
+                        .padding(horizontal = 28.dp, vertical = 15.dp)
                 ) {
                     Text(
                         text = "View Projects",
                         style = MaterialTheme.typography.labelLarge,
-                        color = DarkBackground
+                        color = DarkBackground,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
+                // Download CV
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(GoldPrimary.copy(alpha = 0.1f))
+                        .border(1.dp, GoldPrimary, RoundedCornerShape(12.dp))
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "Download CV"
+                        ) { uriHandler.openUri("resume.pdf") }
+                        .padding(horizontal = 28.dp, vertical = 15.dp)
+                ) {
+                    Text(
+                        text = "Download CV",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = GoldPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                // Contact Me
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
@@ -229,7 +258,7 @@ fun HeroSection(
                             role = Role.Button,
                             onClickLabel = "Contact Me"
                         ) { onNavigateTo(4) }
-                        .padding(horizontal = 32.dp, vertical = 16.dp)
+                        .padding(horizontal = 28.dp, vertical = 15.dp)
                 ) {
                     Text(
                         text = "Contact Me",

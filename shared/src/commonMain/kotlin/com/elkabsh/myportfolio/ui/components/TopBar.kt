@@ -1,15 +1,16 @@
 package com.elkabsh.myportfolio.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -41,6 +43,7 @@ fun TopBar(
     modifier: Modifier = Modifier
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
+    val uriHandler = LocalUriHandler.current
 
     Column(
         modifier = modifier
@@ -55,16 +58,17 @@ fun TopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Portfolio",
+                text = "M7md Gamal",
                 style = MaterialTheme.typography.titleLarge,
                 color = GoldPrimary,
                 fontWeight = FontWeight.Bold
             )
 
             if (!isMobile) {
-                // Desktop: inline nav links
+                // Desktop: inline nav links + Resume action
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(32.dp)
+                    horizontalArrangement = Arrangement.spacedBy(28.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     sections.forEachIndexed { index, section ->
                         Text(
@@ -78,6 +82,27 @@ fun TopBar(
                                 onSectionClick(index)
                                 menuExpanded = false
                             }
+                        )
+                    }
+
+                    // Resume CTA Button
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .border(1.dp, GoldPrimary, RoundedCornerShape(8.dp))
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Download Resume"
+                            ) {
+                                uriHandler.openUri("resume.pdf")
+                            }
+                            .padding(horizontal = 14.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = "Resume",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = GoldPrimary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -125,7 +150,8 @@ fun TopBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(DarkSurface)
-                    .padding(horizontal = 24.dp, vertical = 12.dp)
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 sections.forEachIndexed { index, section ->
                     Box(
@@ -147,6 +173,30 @@ fun TopBar(
                             color = if (index == currentSection) GoldPrimary else TextPrimary
                         )
                     }
+                }
+
+                // Mobile Resume Link
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(GoldPrimary.copy(alpha = 0.12f))
+                        .border(1.dp, GoldPrimary.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "Download Resume"
+                        ) {
+                            uriHandler.openUri("resume.pdf")
+                            menuExpanded = false
+                        }
+                        .padding(horizontal = 16.dp, vertical = 14.dp)
+                ) {
+                    Text(
+                        text = "📄 Download Resume ↗",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = GoldPrimary,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }
