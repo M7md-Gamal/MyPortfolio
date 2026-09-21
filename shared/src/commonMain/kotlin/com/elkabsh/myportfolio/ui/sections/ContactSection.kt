@@ -20,11 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
-import com.elkabsh.myportfolio.ui.theme.Blue
+import com.elkabsh.myportfolio.ui.PortfolioViewModel
 import com.elkabsh.myportfolio.ui.theme.DarkSurface
 import com.elkabsh.myportfolio.ui.theme.DarkSurfaceVariant
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
 import com.elkabsh.myportfolio.ui.theme.TextPrimary
 import com.elkabsh.myportfolio.ui.theme.TextSecondary
 import myportfolio.shared.generated.resources.Res
@@ -41,6 +44,7 @@ fun ContactSection(
 ) {
     val horizontalPadding = if (isMobile) 24.dp else 80.dp
     val uriHandler = LocalUriHandler.current
+    val whatsAppUrl = PortfolioViewModel.formatWhatsAppUrl(data.phone)
 
     Column(
         modifier = modifier
@@ -60,7 +64,7 @@ fun ContactSection(
                 text = "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = TextSecondary,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(if (isMobile) 1f else 0.6f)
             )
 
@@ -79,10 +83,10 @@ fun ContactSection(
                         modifier = Modifier.fillMaxWidth()
                     )
                     ContactCard(
-                        title = "Phone",
+                        title = "WhatsApp",
                         value = data.phone,
                         icon = vectorResource(Res.drawable.whatsapp),
-                        onClick = { uriHandler.openUri("https://wa.me/${data.phone}") },
+                        onClick = { uriHandler.openUri(whatsAppUrl) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Row(
@@ -119,10 +123,10 @@ fun ContactSection(
                         modifier = Modifier.weight(1f)
                     )
                     ContactCard(
-                        title = "Phone",
+                        title = "WhatsApp",
                         value = data.phone,
                         icon = vectorResource(Res.drawable.whatsapp),
-                        onClick = { uriHandler.openUri("https://wa.me/${data.phone}") },
+                        onClick = { uriHandler.openUri(whatsAppUrl) },
                         modifier = Modifier.weight(1f)
                     )
                     ContactCard(
@@ -157,14 +161,17 @@ private fun ContactCard(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(DarkSurfaceVariant)
-            .clickable { onClick() }
+            .clickable(
+                role = Role.Button,
+                onClickLabel = "Contact via $title"
+            ) { onClick() }
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Image(
             imageVector = icon,
-            contentDescription = "WhatsApp",
+            contentDescription = title,
             modifier = Modifier.size(24.dp)
         )
         Text(
@@ -175,7 +182,7 @@ private fun ContactCard(
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            color = Blue
+            color = GoldPrimary
         )
     }
 }

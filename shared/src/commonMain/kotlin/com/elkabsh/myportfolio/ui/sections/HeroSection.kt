@@ -1,24 +1,48 @@
 package com.elkabsh.myportfolio.ui.sections
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
-import com.elkabsh.myportfolio.ui.theme.*
+import com.elkabsh.myportfolio.ui.theme.DarkBackground
+import com.elkabsh.myportfolio.ui.theme.DarkSurface
+import com.elkabsh.myportfolio.ui.theme.DarkSurfaceVariant
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
+import com.elkabsh.myportfolio.ui.theme.TextMuted
+import com.elkabsh.myportfolio.ui.theme.TextPrimary
+import com.elkabsh.myportfolio.ui.theme.TextSecondary
 
 @Composable
 fun HeroSection(
@@ -30,75 +54,68 @@ fun HeroSection(
     val horizontalPadding = if (isMobile) 24.dp else 80.dp
     val verticalPadding = if (isMobile) 64.dp else 120.dp
 
-    // Animation states
-    val infiniteTransition = rememberInfiniteTransition(label = "hero")
-    val animationProgress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "pulse"
-    )
+    // Staggered reveal animations triggered on composition
+    var isVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        isVisible = true
+    }
 
-    // Staggered reveal animations
     val greetingAlpha by animateFloatAsState(
-        targetValue = 1f,
+        targetValue = if (isVisible) 1f else 0f,
         animationSpec = tween(600, delayMillis = 100),
-        label = "greeting"
+        label = "greetingAlpha"
     )
     val greetingOffset by animateIntAsState(
-        targetValue = 0,
+        targetValue = if (isVisible) 0 else 24,
         animationSpec = tween(600, delayMillis = 100, easing = FastOutSlowInEasing),
         label = "greetingOffset"
     )
 
     val nameAlpha by animateFloatAsState(
-        targetValue = 1f,
+        targetValue = if (isVisible) 1f else 0f,
         animationSpec = tween(600, delayMillis = 300),
-        label = "name"
+        label = "nameAlpha"
     )
     val nameOffset by animateIntAsState(
-        targetValue = 0,
+        targetValue = if (isVisible) 0 else 24,
         animationSpec = tween(600, delayMillis = 300, easing = FastOutSlowInEasing),
         label = "nameOffset"
     )
 
     val titleAlpha by animateFloatAsState(
-        targetValue = 1f,
+        targetValue = if (isVisible) 1f else 0f,
         animationSpec = tween(600, delayMillis = 500),
-        label = "title"
+        label = "titleAlpha"
     )
     val titleOffset by animateIntAsState(
-        targetValue = 0,
+        targetValue = if (isVisible) 0 else 24,
         animationSpec = tween(600, delayMillis = 500, easing = FastOutSlowInEasing),
         label = "titleOffset"
     )
 
     val taglineAlpha by animateFloatAsState(
-        targetValue = 1f,
+        targetValue = if (isVisible) 1f else 0f,
         animationSpec = tween(600, delayMillis = 700),
-        label = "tagline"
+        label = "taglineAlpha"
     )
 
     val locationAlpha by animateFloatAsState(
-        targetValue = 1f,
+        targetValue = if (isVisible) 1f else 0f,
         animationSpec = tween(600, delayMillis = 900),
-        label = "location"
+        label = "locationAlpha"
     )
 
     val buttonsAlpha by animateFloatAsState(
-        targetValue = 1f,
+        targetValue = if (isVisible) 1f else 0f,
         animationSpec = tween(600, delayMillis = 1100),
-        label = "buttons"
+        label = "buttonsAlpha"
     )
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                brush = Brush.verticalGradient(
                     colors = listOf(
                         DarkBackground,
                         DarkSurface,
@@ -139,7 +156,7 @@ fun HeroSection(
             Text(
                 text = data.title,
                 style = if (isMobile) MaterialTheme.typography.headlineLarge else MaterialTheme.typography.displayMedium,
-                color = Blue,
+                color = GoldPrimary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .alpha(titleAlpha)
@@ -165,7 +182,7 @@ fun HeroSection(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "Location",
@@ -182,7 +199,7 @@ fun HeroSection(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Buttons with animation
+            // CTA Buttons with animation
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.alpha(buttonsAlpha)
@@ -190,14 +207,17 @@ fun HeroSection(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Blue)
-                        .clickable { onNavigateTo(3) }
+                        .background(GoldPrimary)
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "View Projects"
+                        ) { onNavigateTo(3) }
                         .padding(horizontal = 32.dp, vertical = 16.dp)
                 ) {
                     Text(
                         text = "View Projects",
                         style = MaterialTheme.typography.labelLarge,
-                        color = TextPrimary
+                        color = DarkBackground
                     )
                 }
 
@@ -205,7 +225,10 @@ fun HeroSection(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .background(DarkSurfaceVariant)
-                        .clickable { onNavigateTo(4) }
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "Contact Me"
+                        ) { onNavigateTo(4) }
                         .padding(horizontal = 32.dp, vertical = 16.dp)
                 ) {
                     Text(

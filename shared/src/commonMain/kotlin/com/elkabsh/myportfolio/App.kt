@@ -1,60 +1,79 @@
 package com.elkabsh.myportfolio
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import com.elkabsh.myportfolio.model.getPortfolioData
+import com.elkabsh.myportfolio.ui.PortfolioViewModel
 import com.elkabsh.myportfolio.ui.components.FadeInOnScrollSection
 import com.elkabsh.myportfolio.ui.components.FooterSection
 import com.elkabsh.myportfolio.ui.components.TopBar
-import com.elkabsh.myportfolio.ui.sections.*
-import com.elkabsh.myportfolio.ui.theme.*
+import com.elkabsh.myportfolio.ui.sections.AboutSection
+import com.elkabsh.myportfolio.ui.sections.ContactSection
+import com.elkabsh.myportfolio.ui.sections.HeroSection
+import com.elkabsh.myportfolio.ui.sections.ProjectsSection
+import com.elkabsh.myportfolio.ui.sections.SkillsSection
+import com.elkabsh.myportfolio.ui.theme.DarkBackground
+import com.elkabsh.myportfolio.ui.theme.PortfolioTheme
+import kotlinx.coroutines.launch
 
 @Composable
-fun App() {
+fun App(
+    viewModel: PortfolioViewModel = remember { PortfolioViewModel() }
+) {
     PortfolioTheme {
-        val portfolioData = remember { getPortfolioData() }
-        val sections = listOf("Home", "About", "Skills", "Projects", "Contact")
-        var currentSection by remember { mutableStateOf(0) }
+        val uiState by viewModel.uiState.collectAsState()
+        val portfolioData = uiState.portfolioData
+        val sections = uiState.sections
+
         val scrollState = rememberScrollState()
         val coroutineScope = rememberCoroutineScope()
 
-        // Track section offsets for smooth scroll navigation
+        // Track absolute section offsets within scrollable container
         val sectionOffsets = remember { mutableStateMapOf<Int, Float>() }
 
-        // Viewport height for fade-in calculations
+        // Viewport height for fade-in trigger calculations
         var viewportHeight by remember { mutableIntStateOf(0) }
 
-        // Navigation: scroll to section offset
-        fun navigateToSection(index: Int) {
-            currentSection = index
-            val offset = sectionOffsets[index]?.toInt() ?: 0
-            coroutineScope.launch {
-                scrollState.animateScrollTo(offset)
+        // Efficiently derive the active section index without re-running on every scroll pixel
+        val currentSection by remember {
+            derivedStateOf {
+                val currentScroll = scrollState.value
+                var closest = 0
+                var minDistance = Int.MAX_VALUE
+                for ((index, offset) in sectionOffsets) {
+                    val distance = kotlin.math.abs(currentScroll - offset.toInt())
+                    if (distance < minDistance) {
+                        minDistance = distance
+                        closest = index
+                    }
+                }
+                closest
             }
         }
 
-        // Track current section based on scroll position
-        LaunchedEffect(scrollState.value) {
-            val currentScroll = scrollState.value
-            var closest = 0
-            var minDistance = Int.MAX_VALUE
-            for ((index, offset) in sectionOffsets) {
-                val distance = kotlin.math.abs(currentScroll - offset.toInt())
-                if (distance < minDistance) {
-                    minDistance = distance
-                    closest = index
-                }
-            }
-            if (closest != currentSection) {
-                currentSection = closest
+        // Navigation helper: smoothly scrolls to the target section's absolute offset
+        fun navigateToSection(index: Int) {
+            viewModel.onSectionSelected(index)
+            val offset = sectionOffsets[index]?.toInt() ?: 0
+            coroutineScope.launch {
+                scrollState.animateScrollTo(offset)
             }
         }
 
@@ -75,7 +94,7 @@ fun App() {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Top navigation bar
+                    // Sticky top navigation bar
                     TopBar(
                         sections = sections,
                         currentSection = currentSection,
@@ -83,13 +102,13 @@ fun App() {
                         isMobile = isMobile
                     )
 
-                    // Main content - scrollable
+                    // Main content - scrollable container
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(scrollState)
                     ) {
-                        // Hero Section
+                        // Hero Section (Index 0)
                         FadeInOnScrollSection(
                             scrollState = scrollState,
                             sectionOffset = 0,
@@ -99,13 +118,13 @@ fun App() {
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 onNavigateTo = { index -> navigateToSection(index) },
-                                    modifier = Modifier.onGloballyPositioned { coords ->
-                                        sectionOffsets[0] = coords.positionInRoot().y
-                                    }
+                                modifier = Modifier.onGloballyPositioned { coords ->
+                                    sectionOffsets[0] = coords.positionInRoot().y + scrollState.value
+                                }
                             )
                         }
 
-                        // About Section
+                        // About Section (Index 1)
                         FadeInOnScrollSection(
                             scrollState = scrollState,
                             sectionOffset = sectionOffsets[1]?.toInt() ?: 0,
@@ -115,12 +134,12 @@ fun App() {
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[1] = coords.positionInRoot().y
+                                    sectionOffsets[1] = coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
 
-                        // Skills Section
+                        // Skills Section (Index 2)
                         FadeInOnScrollSection(
                             scrollState = scrollState,
                             sectionOffset = sectionOffsets[2]?.toInt() ?: 0,
@@ -130,12 +149,12 @@ fun App() {
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[2] = coords.positionInRoot().y
+                                    sectionOffsets[2] = coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
 
-                        // Projects Section
+                        // Projects Section (Index 3)
                         FadeInOnScrollSection(
                             scrollState = scrollState,
                             sectionOffset = sectionOffsets[3]?.toInt() ?: 0,
@@ -145,12 +164,12 @@ fun App() {
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[3] = coords.positionInRoot().y
+                                    sectionOffsets[3] = coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }
 
-                        // Contact Section
+                        // Contact Section (Index 4)
                         FadeInOnScrollSection(
                             scrollState = scrollState,
                             sectionOffset = sectionOffsets[4]?.toInt() ?: 0,
@@ -160,7 +179,7 @@ fun App() {
                                 data = portfolioData,
                                 isMobile = isMobile,
                                 modifier = Modifier.onGloballyPositioned { coords ->
-                                    sectionOffsets[4] = coords.positionInRoot().y
+                                    sectionOffsets[4] = coords.positionInRoot().y + scrollState.value
                                 }
                             )
                         }

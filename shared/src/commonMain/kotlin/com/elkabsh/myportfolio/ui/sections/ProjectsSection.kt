@@ -3,9 +3,12 @@ package com.elkabsh.myportfolio.ui.sections
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,17 +37,24 @@ fun ProjectsSection(
         if (isMobile) {
             // Mobile: single column
             data.projects.forEach { project ->
-                ProjectCard(project)
+                ProjectCard(project, modifier = Modifier.fillMaxWidth())
             }
         } else {
-            // Desktop: two-column grid
+            // Desktop: two-column balanced grid
             data.projects.chunked(2).forEach { row ->
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Max),
                     horizontalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     row.forEach { project ->
-                        ProjectCard(project, Modifier.weight(1f))
+                        ProjectCard(
+                            project = project,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                        )
                     }
                     if (row.size < 2) {
                         Spacer(modifier = Modifier.weight(1f))

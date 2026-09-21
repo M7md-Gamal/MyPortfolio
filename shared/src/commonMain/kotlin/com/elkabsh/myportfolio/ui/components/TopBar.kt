@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,11 +21,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.elkabsh.myportfolio.ui.theme.Blue
 import com.elkabsh.myportfolio.ui.theme.DarkBackground
 import com.elkabsh.myportfolio.ui.theme.DarkSurface
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
 import com.elkabsh.myportfolio.ui.theme.TextPrimary
 
 @Composable
@@ -39,11 +42,14 @@ fun TopBar(
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(DarkBackground.copy(alpha = 0.95f))
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(DarkBackground.copy(alpha = 0.95f))
                 .padding(horizontal = if (isMobile) 24.dp else 80.dp, vertical = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -51,7 +57,7 @@ fun TopBar(
             Text(
                 text = "Portfolio",
                 style = MaterialTheme.typography.titleLarge,
-                color = Blue,
+                color = GoldPrimary,
                 fontWeight = FontWeight.Bold
             )
 
@@ -64,8 +70,11 @@ fun TopBar(
                         Text(
                             text = section,
                             style = MaterialTheme.typography.labelLarge,
-                            color = if (index == currentSection) Blue else TextPrimary,
-                            modifier = Modifier.clickable {
+                            color = if (index == currentSection) GoldPrimary else TextPrimary,
+                            modifier = Modifier.clickable(
+                                role = Role.Button,
+                                onClickLabel = "Navigate to $section"
+                            ) {
                                 onSectionClick(index)
                                 menuExpanded = false
                             }
@@ -73,11 +82,18 @@ fun TopBar(
                     }
                 }
             } else {
-                // Mobile: hamburger button
+                // Mobile: accessible hamburger button
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { menuExpanded = !menuExpanded }
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = if (menuExpanded) "Close navigation menu" else "Open navigation menu"
+                        ) { menuExpanded = !menuExpanded }
+                        .semantics {
+                            role = Role.Button
+                            contentDescription = if (menuExpanded) "Close navigation menu" else "Open navigation menu"
+                        }
                         .padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
@@ -85,39 +101,41 @@ fun TopBar(
                         modifier = Modifier
                             .width(24.dp)
                             .height(2.dp)
-                            .background(TextPrimary)
+                            .background(if (menuExpanded) GoldPrimary else TextPrimary)
                     )
                     Box(
                         modifier = Modifier
                             .width(24.dp)
                             .height(2.dp)
-                            .background(TextPrimary)
+                            .background(if (menuExpanded) GoldPrimary else TextPrimary)
                     )
                     Box(
                         modifier = Modifier
                             .width(24.dp)
                             .height(2.dp)
-                            .background(TextPrimary)
+                            .background(if (menuExpanded) GoldPrimary else TextPrimary)
                     )
                 }
             }
         }
 
-        // Mobile dropdown menu
+        // Mobile dropdown menu rendered in flow without brittle offsets
         if (isMobile && menuExpanded) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(DarkSurface)
                     .padding(horizontal = 24.dp, vertical = 12.dp)
-                    .offset(y = 64.dp)
             ) {
                 sections.forEachIndexed { index, section ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
-                            .clickable {
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Navigate to $section"
+                            ) {
                                 onSectionClick(index)
                                 menuExpanded = false
                             }
@@ -126,7 +144,7 @@ fun TopBar(
                         Text(
                             text = section,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = if (index == currentSection) Blue else TextPrimary
+                            color = if (index == currentSection) GoldPrimary else TextPrimary
                         )
                     }
                 }

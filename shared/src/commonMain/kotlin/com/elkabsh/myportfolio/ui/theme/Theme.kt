@@ -5,17 +5,17 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Blue,
+    primary = GoldPrimary,
     onPrimary = TextPrimary,
-    primaryContainer = BlueDark,
+    primaryContainer = GoldDark,
     onPrimaryContainer = TextPrimary,
-    secondary = Green,
+    secondary = WarmCream,
     onSecondary = DarkBackground,
-    secondaryContainer = Green,
+    secondaryContainer = WarmCream,
     onSecondaryContainer = DarkBackground,
-    tertiary = Orange,
+    tertiary = AccentRed,
     onTertiary = DarkBackground,
-    tertiaryContainer = Orange,
+    tertiaryContainer = AccentRed,
     onTertiaryContainer = DarkBackground,
     background = DarkBackground,
     onBackground = TextPrimary,
@@ -25,7 +25,7 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = TextSecondary,
     outline = BorderColor,
     outlineVariant = BorderColor,
-    error = Rose,
+    error = AccentRose,
     onError = TextPrimary
 )
 

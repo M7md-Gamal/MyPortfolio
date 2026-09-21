@@ -1,7 +1,8 @@
 package com.elkabsh.myportfolio.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,7 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.SkillColor
-import com.elkabsh.myportfolio.ui.theme.*
+import com.elkabsh.myportfolio.ui.theme.AccentAmber
+import com.elkabsh.myportfolio.ui.theme.AccentBlue
+import com.elkabsh.myportfolio.ui.theme.AccentEmerald
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
+import com.elkabsh.myportfolio.ui.theme.WarmCream
 
 @Composable
 fun SkillChip(
@@ -20,11 +25,11 @@ fun SkillChip(
     modifier: Modifier = Modifier
 ) {
     val (backgroundColor, textColor) = when (color) {
-        SkillColor.BLUE -> Blue.copy(alpha = 0.15f) to Blue
-        SkillColor.GREEN -> Green.copy(alpha = 0.15f) to Green
-        SkillColor.ORANGE -> Orange.copy(alpha = 0.15f) to Orange
-        SkillColor.PURPLE -> Purple.copy(alpha = 0.15f) to Purple
-        SkillColor.YELLOW -> Yellow.copy(alpha = 0.15f) to Yellow
+        SkillColor.BLUE -> AccentBlue.copy(alpha = 0.15f) to AccentBlue
+        SkillColor.GREEN -> AccentEmerald.copy(alpha = 0.15f) to AccentEmerald
+        SkillColor.ORANGE -> AccentAmber.copy(alpha = 0.15f) to AccentAmber
+        SkillColor.PURPLE -> GoldPrimary.copy(alpha = 0.15f) to GoldPrimary
+        SkillColor.YELLOW -> WarmCream.copy(alpha = 0.15f) to WarmCream
     }
 
     Box(

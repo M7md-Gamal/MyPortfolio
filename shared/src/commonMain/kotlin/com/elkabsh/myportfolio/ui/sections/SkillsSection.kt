@@ -1,7 +1,13 @@
 package com.elkabsh.myportfolio.ui.sections
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -10,9 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
+import com.elkabsh.myportfolio.model.SkillCategory
 import com.elkabsh.myportfolio.model.SkillColor
 import com.elkabsh.myportfolio.ui.components.SkillChip
-import com.elkabsh.myportfolio.ui.theme.*
+import com.elkabsh.myportfolio.ui.theme.AccentAmber
+import com.elkabsh.myportfolio.ui.theme.AccentBlue
+import com.elkabsh.myportfolio.ui.theme.AccentEmerald
+import com.elkabsh.myportfolio.ui.theme.DarkSurface
+import com.elkabsh.myportfolio.ui.theme.DarkSurfaceVariant
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
+import com.elkabsh.myportfolio.ui.theme.WarmCream
 
 @Composable
 fun SkillsSection(
@@ -57,16 +70,16 @@ fun SkillsSection(
 
 @Composable
 private fun SkillCategoryCard(
-    category: com.elkabsh.myportfolio.model.SkillCategory,
+    category: SkillCategory,
     isMobile: Boolean,
     modifier: Modifier = Modifier
 ) {
     val accentColor = when (category.color) {
-        SkillColor.BLUE -> Blue
-        SkillColor.GREEN -> Green
-        SkillColor.ORANGE -> Orange
-        SkillColor.PURPLE -> Purple
-        SkillColor.YELLOW -> Yellow
+        SkillColor.BLUE -> AccentBlue
+        SkillColor.GREEN -> AccentEmerald
+        SkillColor.ORANGE -> AccentAmber
+        SkillColor.PURPLE -> GoldPrimary
+        SkillColor.YELLOW -> WarmCream
     }
 
     Column(

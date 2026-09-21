@@ -1,7 +1,15 @@
 package com.elkabsh.myportfolio.ui.sections
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,7 +20,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.elkabsh.myportfolio.model.PortfolioData
-import com.elkabsh.myportfolio.ui.theme.*
+import com.elkabsh.myportfolio.ui.theme.AccentEmerald
+import com.elkabsh.myportfolio.ui.theme.BorderColor
+import com.elkabsh.myportfolio.ui.theme.DarkBackground
+import com.elkabsh.myportfolio.ui.theme.DarkSurface
+import com.elkabsh.myportfolio.ui.theme.GoldPrimary
+import com.elkabsh.myportfolio.ui.theme.TextMuted
+import com.elkabsh.myportfolio.ui.theme.TextPrimary
+import com.elkabsh.myportfolio.ui.theme.TextSecondary
+import com.elkabsh.myportfolio.ui.theme.WarmCream
 
 @Composable
 fun AboutSection(
@@ -88,7 +104,7 @@ private fun StatItem(value: String, label: String) {
         Text(
             text = value,
             style = MaterialTheme.typography.displayMedium,
-            color = Blue,
+            color = GoldPrimary,
             textAlign = TextAlign.Center
         )
         Text(
@@ -114,7 +130,7 @@ private fun EducationStory(data: PortfolioData, modifier: Modifier = Modifier) {
             Text(
                 text = "Education",
                 style = MaterialTheme.typography.titleLarge,
-                color = Green
+                color = WarmCream
             )
             Text(
                 text = data.education.degree,
@@ -134,7 +150,7 @@ private fun EducationStory(data: PortfolioData, modifier: Modifier = Modifier) {
             Text(
                 text = "Grade: ${data.education.grade}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Yellow
+                color = AccentEmerald
             )
         }
 
@@ -151,7 +167,7 @@ private fun EducationStory(data: PortfolioData, modifier: Modifier = Modifier) {
             Text(
                 text = "Languages",
                 style = MaterialTheme.typography.titleLarge,
-                color = Purple
+                color = WarmCream
             )
             data.languages.forEach { language ->
                 Row(
@@ -190,7 +206,7 @@ fun SectionTitle(
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(2.dp))
-                .background(Blue)
+                .background(GoldPrimary)
                 .width(60.dp)
                 .height(4.dp)
         )
